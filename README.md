@@ -27,8 +27,9 @@
 6. [Part 1: Physics model, simulate and verify](#part-1-physics-model-simulate-and-verify)
 7. [Part 2: Data and statistics](#part-2-data-and-statistics)
 8. [Data testing](#data-testing)
-9. [Rubric map](#rubric-map)
-10. [Scope and limitations](#scope-and-limitations)
+9. [Supplementary analysis](#supplementary-analysis)
+10. [Rubric map](#rubric-map)
+11. [Scope and limitations](#scope-and-limitations)
 
 ---
 
@@ -45,6 +46,20 @@ We study two systems, each with a closed-form law and a differential equation be
 | **Unknowns fitted** | reaction time $t_r$, friction $\mu$ | latent heat $L$ (and $P_0$) |
 | **Parameters used** | $t_r=0.7$ s, $\mu=0.7$, $g=9.81$ m/s² | $R=8.314462618$ J/(mol·K), $T$ in kelvin, constant $L$ |
 | **Effect the model omits** | road-grade factor (1.000 → 1.020) | temperature dependence of $L$ |
+
+---
+
+### Workflow overview
+
+```mermaid
+flowchart LR
+    A["Data generation<br/>60 points per system"] --> B["Model verification<br/>Euler and RK4 vs analytic law"]
+    B --> C["Data and statistics<br/>weighted fits with uncertainties"]
+    C --> D["Data testing<br/>14 automated checks per dataset"]
+    A --> D
+    C --> E["Results<br/>figures, tables, report"]
+    D --> E
+```
 
 ---
 
@@ -84,7 +99,8 @@ PH1050_End_Term_Project/
 │   ├── braking.py                           Euler / RK4 braking ODE
 │   ├── clausius_clapeyron.py                Euler / RK4 Clausius–Clapeyron ODE
 │   ├── braking_verification.py              regenerates stopping verification results
-│   └── vapour_pressure_data_statistics.py   weighted fit + PDF report (stage 5)
+│   ├── vapour_pressure_data_statistics.py   weighted fit + PDF report (stage 5)
+│   └── supplementary_analysis.py            noise, correlation, residual and extrapolation analysis
 ├── tests/                         ← 42 pytest tests
 ├── results/
 │   ├── figures/                   all plots used below
@@ -109,6 +125,7 @@ pip install -r requirements.txt
 pytest                                                # run all 42 tests
 python src/braking_verification.py                    # stopping-distance verification results
 python src/vapour_pressure_data_statistics.py         # vapour-pressure fit, plots and PDF report
+python src/supplementary_analysis.py                  # supplementary figures and summary table
 ```
 
 The notebooks load their CSV by bare file name. Run them from the `data/` folder, or upload the CSV when prompted in Google Colab.
@@ -179,6 +196,17 @@ After the reaction time the car decelerates at $a=\mu g$. With $y=[x,v]$ the sys
 | Max energy drift of $\tfrac12 mv^2+\mu m g\,x$ | n/a | 0.34 % | ~$10^{-15}$ |
 | Measured convergence order | n/a | **1.00** | exact to round-off (~$10^{-12}$ m) |
 
+```mermaid
+flowchart TD
+    S["Start: x = 0, v = v0, t = 0"] --> Q{"v > 1e-12 ?"}
+    Q -- yes --> H["h = min(dt, v / a)"]
+    H --> U["Advance (x, v) by h<br/>Euler or RK4"]
+    U --> V["Clip v at 0, t = t + h"]
+    V --> Q
+    Q -- no --> E["Stop: record braking distance x"]
+    E --> C["Compare with v0^2 / (2 mu g)<br/>and check energy"]
+```
+
 RK4 is exact here because the deceleration is constant, so the solution is a quadratic that RK4 integrates without truncation error.
 
 ![Stopping distance verification](results/figures/stopping_verification_panels.png)
@@ -190,6 +218,19 @@ RK4 is exact here because the deceleration is constant, so the solution is a qua
 $$\frac{dP}{dT}=\frac{L\,P}{R\,T^2}\quad\Longrightarrow\quad P=P_0\exp\!\left[-\frac{L}{R}\left(\frac1T-\frac1{T_0}\right)\right]$$
 
 with $T_0=293.15$ K and $L=43.21$ kJ/mol calibrated on the reference column.
+
+```mermaid
+flowchart TD
+    A["Calibrate L on the reference column"] --> B["Integrate dP/dT with Euler and RK4<br/>N = 2 ... 16384 steps"]
+    B --> C["Relative error vs analytic law"]
+    C --> D["Log-log slope = measured order"]
+    B --> E["Invariant I = ln P + L / (R T)"]
+    E --> F["Drift below stated tolerance?"]
+    A --> G["Limiting cases: L to 0, T to T0, T to infinity"]
+    D --> H["Verification passed"]
+    F --> H
+    G --> H
+```
 
 | Check | Result |
 |---|---|
@@ -220,6 +261,18 @@ with $T_0=293.15$ K and $L=43.21$ kJ/mol calibrated on the reference column.
 ---
 
 ## Part 2: Data and statistics
+
+```mermaid
+flowchart LR
+    A["CSV data"] --> B["Unit and integrity checks"]
+    B --> C["Train / test labels"]
+    C --> D["Fit model with sigma weights"]
+    D --> E["Parameters, covariance,<br/>95 % intervals"]
+    E --> F["Hypothesis test or<br/>held-out error"]
+    D --> G["Residuals, standardised<br/>residuals, Q-Q plot"]
+    F --> H["Conclusion"]
+    G --> H
+```
 
 ### Stopping distance: fit $t_r$ and $\mu$
 
@@ -265,6 +318,14 @@ The test error is close to the training error. The reduced $\chi^2$ above 1 says
 
 ## Data testing
 
+```mermaid
+flowchart TD
+    A["Load CSV"] --> B["Run 14 checks"]
+    B --> C{"All passed?"}
+    C -- yes --> D["Release data to the analysis"]
+    C -- no --> E["Abort and list the failed checks"]
+```
+
 Both datasets are guarded by 14 automated checks each. The notebooks print `PASSED` / `FAILED` per check; the same checks live in `tests/` as `pytest` tests.
 
 | Group | Stopping distance | Vapour pressure |
@@ -287,6 +348,60 @@ The `tests/` folder also checks the ODE solvers and the fitted values:
 ```bash
 pytest            # 42 passed
 ```
+
+---
+
+## Supplementary analysis
+
+Extra diagnostics computed by [`src/supplementary_analysis.py`](src/supplementary_analysis.py); every number below is in [`results/tables/supplementary_summary.csv`](results/tables/supplementary_summary.csv).
+
+### Noise in the data
+
+| | Stopping distance | Vapour pressure |
+|---|--:|--:|
+| rms relative noise | 5.87 % | 3.38 % |
+| mean relative noise | +0.70 % | +0.47 % |
+
+![Noise distributions](results/figures/noise_distributions.png)
+
+### Correlation between the fitted parameters
+
+$t_r$ and $\mu$ are strongly correlated (correlation +0.89): a longer reaction time can be traded against a larger friction coefficient, so their joint uncertainty is an elongated region rather than the box formed by the two separate intervals. The generating point $(t_r,\mu)=(0.7,\,0.7)$ lies inside the 95 % joint region (Mahalanobis $\chi^2=3.42$, $p=0.18$ with 2 degrees of freedom).
+
+<p align="center">
+  <img src="results/figures/stopping_parameter_correlation.png" width="55%" alt="Joint confidence region for reaction time and friction"/>
+</p>
+
+### Standardised residuals and normality
+
+| | Stopping distance | Vapour pressure |
+|---|--:|--:|
+| Reduced $\chi^2$ | 1.28 | 1.37 (training rows) |
+| rms standardised residual | n/a | 1.14 train, 1.16 test |
+| Shapiro-Wilk $p$ of standardised residuals | 0.29 | 0.68 (training rows) |
+
+Neither set of standardised residuals shows evidence against normality. Values above 1 mean the stated uncertainties are slightly too small for the actual scatter, as the reduced $\chi^2$ already indicated.
+
+![Standardised residuals and Q-Q plots](results/figures/normalised_residuals_qq.png)
+
+### Vapour pressure: fitted law and held-out data
+
+The band shows the 95 % uncertainty of the fitted law propagated from the parameter covariance. Of the 24 held-out points, 23 (95.8 %) fall inside the 95 % prediction interval that combines the fit uncertainty with each point's stated uncertainty.
+
+![Vapour prediction band](results/figures/vapour_prediction_band.png)
+
+### Stopping distance: fit on the slow data only
+
+As a counterpart to the vapour-pressure train/test evaluation, the stopping law is refitted on the slowest 60 % of speeds (36 rows) and evaluated on the fastest 40 % (24 rows). This is a supplementary check and not the Part 3 model comparison.
+
+| | Train (slowest 60 %) | Test (fastest 40 %) |
+|---|--:|--:|
+| RMSE | 1.69 m | 4.38 m |
+| rms relative error | 5.53 % | 5.65 % |
+
+Refitted parameters: $t_r=0.682\pm0.036$ s, $\mu=0.675\pm0.026$ (all-data fit: $0.689\pm0.026$ s and $0.682\pm0.015$). The absolute error grows with speed because the distances are larger, while the relative error stays at about 5.6 %: the two-parameter law extrapolates to the fast speeds without loss of relative accuracy.
+
+![Stopping distance train-only fit](results/figures/stopping_train_only_fit.png)
 
 ---
 
