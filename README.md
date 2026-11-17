@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔍 Find the Law
+# Find the Law
 
 ### Recovering physical laws from raw measurements, then testing them on unseen data
 
@@ -17,28 +17,28 @@
 
 ---
 
-## 📑 Contents
+## Contents
 
-1. [The question](#-the-question)
-2. [Team and who-did-what](#-team-and-who-did-what)
-3. [Repository layout](#-repository-layout)
-4. [Quick start](#-quick-start)
-5. [Data: where it came from](#-data-where-it-came-from)
-6. [Part 1: Physics model, simulate and verify](#-part-1-physics-model-simulate-and-verify)
-7. [Part 2: Data and statistics](#-part-2-data-and-statistics)
-8. [Data testing](#-data-testing)
-9. [Rubric map](#-rubric-map)
-10. [Scope and limitations](#-scope-and-limitations)
+1. [The question](#the-question)
+2. [Team and who-did-what](#team-and-who-did-what)
+3. [Repository layout](#repository-layout)
+4. [Quick start](#quick-start)
+5. [Data: where it came from](#data-where-it-came-from)
+6. [Part 1: Physics model, simulate and verify](#part-1-physics-model-simulate-and-verify)
+7. [Part 2: Data and statistics](#part-2-data-and-statistics)
+8. [Data testing](#data-testing)
+9. [Rubric map](#rubric-map)
+10. [Scope and limitations](#scope-and-limitations)
 
 ---
 
-## ❓ The question
+## The question
 
 > *Given raw measurements, can we recover the physical law behind them and test it on data it has not seen?*
 
 We study two systems, each with a closed-form law and a differential equation behind it.
 
-| | 🚗 Stopping distance | 💧 Vapour pressure |
+| | Stopping distance | Vapour pressure |
 |---|---|---|
 | **Law** | $d = v\,t_r + \dfrac{v^2}{2\mu g}$ | $P = P_0\exp\!\left[-\dfrac{L}{R}\left(\dfrac1T-\dfrac1{T_0}\right)\right]$ |
 | **ODE** | $\dfrac{dx}{dt}=v,\ \ \dfrac{dv}{dt}=-\mu g$ | $\dfrac{dP}{dT}=\dfrac{L\,P}{R\,T^2}$ |
@@ -48,7 +48,7 @@ We study two systems, each with a closed-form law and a differential equation be
 
 ---
 
-## 👥 Team and who-did-what
+## Team and who-did-what
 
 Each stage was owned by one team member.
 
@@ -64,7 +64,7 @@ Each stage was owned by one team member.
 
 ---
 
-## 🗂 Repository layout
+## Repository layout
 
 ```text
 PH1050_End_Term_Project/
@@ -98,7 +98,7 @@ PH1050_End_Term_Project/
 
 ---
 
-## 🚀 Quick start
+## Quick start
 
 ```bash
 git clone https://github.com/Mahith2203/PH1050_End_Term_Project.git
@@ -115,7 +115,7 @@ The notebooks load their CSV by bare file name. Run them from the `data/` folder
 
 ---
 
-## 📦 Data: where it came from
+## Data: where it came from
 
 Both datasets are **generated**, not measured. They are frozen as CSV files in [`data/`](data), and every analysis in this repository reads exactly those files. The generation script itself is not part of the repository.
 
@@ -166,9 +166,9 @@ The problem statement suggests 5 % noise for vapour pressure; the delivered data
 
 ---
 
-## ⚙️ Part 1: Physics model, simulate and verify
+## Part 1: Physics model, simulate and verify
 
-### 🚗 Braking ODE (Euler and RK4)
+### Braking ODE (Euler and RK4)
 
 After the reaction time the car decelerates at $a=\mu g$. With $y=[x,v]$ the system is $\dot y=[v,\,-\mu g]$. Both solvers shorten the last step so the car stops exactly. Example: $v_0=20$ m/s, $\mu=0.7$, $t_r=0.7$ s, $\Delta t=0.01$ s, $m=1200$ kg.
 
@@ -185,7 +185,7 @@ RK4 is exact here because the deceleration is constant, so the solution is a qua
 
 *Left: position against time. Middle: the energy check $\tfrac12 mv^2=\mu m g\,d_\text{brake}$. Right: log-log convergence.* Regenerate with `python src/braking_verification.py`; the table is in [`results/tables/stopping_convergence_table.csv`](results/tables/stopping_convergence_table.csv).
 
-### 💧 Clausius–Clapeyron ODE (Euler and RK4)
+### Clausius–Clapeyron ODE (Euler and RK4)
 
 $$\frac{dP}{dT}=\frac{L\,P}{R\,T^2}\quad\Longrightarrow\quad P=P_0\exp\!\left[-\frac{L}{R}\left(\frac1T-\frac1{T_0}\right)\right]$$
 
@@ -219,9 +219,9 @@ with $T_0=293.15$ K and $L=43.21$ kJ/mol calibrated on the reference column.
 
 ---
 
-## 📊 Part 2: Data and statistics
+## Part 2: Data and statistics
 
-### 🚗 Stopping distance: fit $t_r$ and $\mu$
+### Stopping distance: fit $t_r$ and $\mu$
 
 Weighted nonlinear least squares (`scipy.optimize.curve_fit`, absolute uncertainties) on all 60 points, 58 degrees of freedom. Notebook: [`04_…`](notebooks/04_stopping_distance_data_statistics.ipynb).
 
@@ -237,7 +237,7 @@ Weighted nonlinear least squares (`scipy.optimize.curve_fit`, absolute uncertain
 
 Residuals scatter around zero with no obvious curve and widen with speed, as expected for noise that grows with the distance (the uncertainty column is 5 % of it).
 
-### 💧 Vapour pressure: fit $L$
+### Vapour pressure: fit $L$
 
 Linearised model $\ln P=\ln P_0-\dfrac{L}{R}\left(\dfrac1T-\dfrac1{T_0}\right)$, weighted straight-line fit with $\sigma_{\ln P}=\sigma_P/P$ and weights $1/\sigma_{\ln P}^2$, **training rows only**. Script: [`src/vapour_pressure_data_statistics.py`](src/vapour_pressure_data_statistics.py); full report: [`results/reports/vapour_pressure_data_statistics_report.pdf`](results/reports/vapour_pressure_data_statistics_report.pdf).
 
@@ -263,11 +263,11 @@ The test error is close to the training error. The reduced $\chi^2$ above 1 says
 
 ---
 
-## ✅ Data testing
+## Data testing
 
 Both datasets are guarded by 14 automated checks each. The notebooks print `PASSED` / `FAILED` per check; the same checks live in `tests/` as `pytest` tests.
 
-| Group | 🚗 Stopping distance | 💧 Vapour pressure |
+| Group |  Stopping distance |  Vapour pressure |
 |---|---|---|
 | Range and units | 20–120 km/h · equal steps · m/s = km/h ÷ 3.6 | 20–100 °C · equal steps · K = °C + 273.15 |
 | Values | all positive · uncertainty = 5 % of simulated · $d$ rises with speed · grade factor 1.00 → 1.02 | all positive · uncertainty = 3 % of simulated · $P$ rises with $T$ · $\ln P$ vs $1/T$ straight ($r<-0.99$) |
@@ -290,11 +290,11 @@ pytest            # 42 passed
 
 ---
 
-## 🎯 Rubric map
+## Rubric map
 
 | Line | What is required | Where it is shown |
 |:-:|---|---|
-| **B2** | ODE solutions match the analytic stopping distance and pressure law | [Part 1](#-part-1-physics-model-simulate-and-verify), `tests/test_ode_verification.py` |
+| **B2** | ODE solutions match the analytic stopping distance and pressure law | [Part 1](#part-1-physics-model-simulate-and-verify), `tests/test_ode_verification.py` |
 | **B3** | Energy check for braking; limiting cases within stated tolerances | energy panel, invariant and limit table |
 | **B4** | Log-log convergence for both ODEs with measured orders | 1.00 / exact (braking), 0.97 / 3.96 (vapour) |
 | **B5** | Fitted laws plotted against data with rms error | stopping rms 3.09 m; vapour rms tables and fit plots |
@@ -302,7 +302,7 @@ pytest            # 42 passed
 
 ---
 
-## ⚠️ Scope and limitations
+## Scope and limitations
 
 - **Part 3 (data-driven model)** of the problem statement is not part of this repository: no cross-validated comparison of $d=av$, $av^2$, $av+bv^2$, $av+bv^2+cv^3$, and no slow/fast extrapolation test (rubric line D6). The train/test labels in the CSVs (slowest 60 % / fastest 40 %) are in place for it.
 - The stopping-distance fit uses all 60 points; the vapour-pressure fit uses the 36 training rows only.
