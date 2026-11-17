@@ -77,14 +77,6 @@ Each stage was owned by one team member.
 | 6 | Kabil Arasan | EP26B013 | Data testing 1 (stopping distance) | [`notebooks/06_…`](notebooks/06_stopping_distance_data_testing.ipynb), [`tests/`](tests/test_stopping_distance_data.py) |
 | 7 | V. Monish Reddy | MM25B050 | Data testing 2 (vapour pressure) | [`notebooks/07_…`](notebooks/07_vapour_pressure_data_testing.ipynb), [`tests/`](tests/test_vapour_pressure_data.py) |
 
----|---|---|---|
-| 1 | Priyangshu Goswami | EP26B022 | Data collection / generation | [`data/`](data) |
-| 2 | G K Dhakshini | PH26B004 | Model simulation and verification 1 (stopping distance) | [`notebooks/02_…`](notebooks/02_stopping_distance_model_verification.ipynb), [`src/braking.py`](src/braking.py) |
-| 3 | Kabil Arasan | EP26B013 | Model simulation and verification 2 (vapour pressure) | [`notebooks/03_…`](notebooks/03_vapour_pressure_model_verification.ipynb), [`src/clausius_clapeyron.py`](src/clausius_clapeyron.py) |
-| 4 | Mutturaj Shirahatti | EP26B018 | Data and statistics 1 (stopping distance) | [`notebooks/04_…`](notebooks/04_stopping_distance_data_statistics.ipynb) |
-| 5 | Vetcha Venkata Sai Lokesh | EP26B041 | Data and statistics 2 (vapour pressure) | [`notebooks/05_…`](notebooks/05_vapour_pressure_data_statistics.ipynb), [`src/vapour_pressure_data_statistics.py`](src/vapour_pressure_data_statistics.py) |
-| 6 | V. Monish Reddy | MM25B050 | Data testing 1 (stopping distance) | [`notebooks/06_…`](notebooks/06_stopping_distance_data_testing.ipynb), [`tests/`](tests/test_stopping_distance_data.py) |
-| 7 | Mahith Chintala | MM23B004 | Data testing 2 (vapour pressure) | [`notebooks/07_…`](notebooks/07_vapour_pressure_data_testing.ipynb), [`tests/`](tests/test_vapour_pressure_data.py) |
 
 ---
 
