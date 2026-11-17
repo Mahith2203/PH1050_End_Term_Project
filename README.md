@@ -11,7 +11,7 @@
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Tests](https://img.shields.io/badge/tests-42%20passing-2E8B6E?style=for-the-badge)
 
-*Final Group Project · Problem 2 · Instructor: Dr. Ayana Ghosh*
+*Final Group Project · Problem Statements I and II · Instructor: Dr. Ayana Ghosh*
 
 </div>
 
