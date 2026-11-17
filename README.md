@@ -41,7 +41,7 @@ We study two systems, each with a closed-form law and a differential equation be
 
 | | Stopping distance | Vapour pressure |
 |---|---|---|
-| **Law** | $d = v\,t_r + \dfrac{v^2}{2\mu g}$ | $P = P_0\exp\!\left[-\dfrac{L}{R}\left(\dfrac1T-\dfrac1{T_0}\right)\right]$ |
+| **Law** | $d = v\,t_r + \dfrac{v^2}{2\mu g}$ | $P = P_0\exp\left[-\dfrac{L}{R}\left(\dfrac1T-\dfrac1{T_0}\right)\right]$ |
 | **ODE** | $\dfrac{dx}{dt}=v,\ \ \dfrac{dv}{dt}=-\mu g$ | $\dfrac{dP}{dT}=\dfrac{L\,P}{R\,T^2}$ |
 | **Unknowns fitted** | reaction time $t_r$, friction $\mu$ | latent heat $L$ (and $P_0$) |
 | **Parameters used** | $t_r=0.7$ s, $\mu=0.7$, $g=9.81$ m/s² | $R=8.314462618$ J/(mol·K), $T$ in kelvin, constant $L$ |
