@@ -267,7 +267,7 @@ The test error is close to the training error. The reduced $\chi^2$ above 1 says
 
 Both datasets are guarded by 14 automated checks each. The notebooks print `PASSED` / `FAILED` per check; the same checks live in `tests/` as `pytest` tests.
 
-| Group |  Stopping distance |  Vapour pressure |
+| Group | Stopping distance | Vapour pressure |
 |---|---|---|
 | Range and units | 20–120 km/h · equal steps · m/s = km/h ÷ 3.6 | 20–100 °C · equal steps · K = °C + 273.15 |
 | Values | all positive · uncertainty = 5 % of simulated · $d$ rises with speed · grade factor 1.00 → 1.02 | all positive · uncertainty = 3 % of simulated · $P$ rises with $T$ · $\ln P$ vs $1/T$ straight ($r<-0.99$) |
